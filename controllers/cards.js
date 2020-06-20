@@ -44,8 +44,6 @@ const delCard = (req, res) => {
       } else {
         res.status(403).send({ message: 'Нет прав на удаление' });
       }
-    })
-    .then((card) => {
       res.status(200).send(card);
     })
     .catch((err) => {
