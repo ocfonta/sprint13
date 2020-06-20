@@ -1,4 +1,3 @@
-const validator = require('validator');
 const Card = require('../models/card');
 
 const createCard = (req, res) => {
@@ -9,9 +8,7 @@ const createCard = (req, res) => {
     name, link, owner: req.user._id, createdAt,
   })
     .then((card) => {
-      if (validator.isURL(link)) {
-        res.status(200).send({ data: card });
-      }
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -44,6 +41,8 @@ const delCard = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else if (card.owner.toString() === req.user._id) {
         card.remove(req.params.cardId);
+      } else {
+        res.status(403).send({ message: 'Нет прав на удаление' });
       }
     })
     .then((card) => {
