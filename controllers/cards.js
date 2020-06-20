@@ -39,11 +39,12 @@ const delCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточка не найдена' });
-      } else if (card.owner.toString() === req.user._id) {
-        card.remove(req.params.cardId);
-      } else {
-        res.status(403).send({ message: 'Нет прав на удаление' });
+      } if (card.owner.toString() === req.user._id) {
+        return card.remove(req.params.cardId);
       }
+      return res.status(403).send({ message: 'Нет прав на удаление' });
+    })
+    .then((card) => {
       res.status(200).send(card);
     })
     .catch((err) => {
