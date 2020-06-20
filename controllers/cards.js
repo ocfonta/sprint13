@@ -3,15 +3,15 @@ const Card = require('../models/card');
 
 const createCard = (req, res) => {
   const {
-    name, link, createdAt,
+    name, link, likes, createdAt,
   } = req.body;
   Card.create({
-    name, link, owner: req.user._id, createdAt,
+    name, link, owner: req.user._id, likes, createdAt,
   })
     .then((card) => {
       if (validator.isURL(link)) {
         res.status(200).send({ data: card });
-      } else res.status(400).send({ message: 'Некорректная ссылка на изображение' });
+      }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -44,10 +44,10 @@ const delCard = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else if (card.owner.toString() === req.user._id) {
         card.remove(req.params.cardId);
-        res.status(200).send(card);
-      } else {
-        res.status(403).send({ message: 'Нет прав на удаление' });
       }
+    })
+    .then((card) => {
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
