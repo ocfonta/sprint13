@@ -40,13 +40,12 @@ const delCard = (req, res) => {
       if (!card) {
         res.status(404).send({ message: 'Карточка не найдена' });
       } if (card.owner.toString() === req.user._id) {
-        return card.remove(req.params.cardId);
+        return card.remove(req.params.cardId)
+          .then(() => res.status(200).send(card));
       }
       return res.status(403).send({ message: 'Нет прав на удаление' });
     })
-    .then((card) => {
-      res.status(200).send(card);
-    })
+
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
